@@ -9,9 +9,9 @@ If you like, please retweet the following tweets to spread the word:
 
 <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">2次元流体計算をブラウザに計算させるウェブアプリを作りました。格子ボルツマン法を用いています。ユーザーが自由に描いた物体を一様流中に置いて、流れの様子を見守ることができます。 いろいろイジって遊んでください。 <a href="https://twitter.com/hashtag/draw_in_flow?src=hash&amp;ref_src=twsrc%5Etfw">#draw_in_flow</a><a href="https://t.co/5mac8evgHF">https://t.co/5mac8evgHF</a> <a href="https://t.co/IXq6slXEnh">pic.twitter.com/IXq6slXEnh</a></p>&mdash; みね@太陽の科学館 (@solarphys_info) <a href="https://twitter.com/solarphys_info/status/1626054485335482368?ref_src=twsrc%5Etfw">February 16, 2023</a></blockquote>
 
-The following Qiita article summarizes the memoirs of the development of the app:
+The following Qiita article summarizes the memoirs of the development of the app (in Japanese):
 
-[URL to be added]
+https://qiita.com/shigunodo/items/07f0d43f96a278285a89
 
 # How to play the app?
 
