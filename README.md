@@ -1,6 +1,6 @@
 ![Draw in Flow](./www/logo.png) 
 
-# What is this repositry?
+# What is this repository?
  Source codes of WASM/JS web application "Draw in Flow", which can calculate 2D flow around object using the lattice Boltzmann method. Physical boundary can be freely painted and set by user. It is published on the following webpage:
 
 https://solarphys.com/draw_in_flow/
@@ -12,6 +12,8 @@ If you like, please retweet the following tweets to spread the word:
 The following Qiita article summarizes the memoirs of the development of the app (in Japanese):
 
 https://qiita.com/shigunodo/items/07f0d43f96a278285a89
+
+The author of the app is Ryuji Mineta <shigunodo@gmail.com>.
 
 # How to play the app?
 
