@@ -1,0 +1,28 @@
+[package]
+name = "draw_in_flow"
+authors = ["Ryuji Mineta <shigunodo@gmail.com>"]
+version = "1.0.0"
+edition = "2021"
+description = "WASM/JS web application, which can calculate 2D flow around object using CM-LBM. Physical boundary can be freely painted and set by user."
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["console_error_panic_hook"]
+
+[dependencies]
+wasm-bindgen = "0.2.63"
+
+# The `console_error_panic_hook` crate provides better debugging of panics by
+# logging them with `console.error`. This is great for development, but requires
+# all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
+# code size when deploying.
+console_error_panic_hook = { version = "0.1.6", optional = true }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.13"
+
+[profile.release]
+opt-level = 3
+lto = true

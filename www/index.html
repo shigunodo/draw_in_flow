@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="./style.css?002" rel="stylesheet" type="text/css">
+  <link rel="shortcut icon" href="./favicon.ico">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/11162b2b99.js" crossorigin="anonymous"></script>
+  <script type="module" src='./main.js?002' defer></script>
+  <title>Draw in Flow - 太陽の科学館</title>
+  <meta name="description" content="LBM により2次元流体計算をするウェブアプリケーションです。自由に描いた物体を一様流中に置けます。">
+
+  <meta property="og:url" content="https://solarphys.com/draw_in_flow/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Draw in Flow" />
+  <meta property="og:description" content="LBM により2次元流体計算をするウェブアプリケーションです。自由に描いた物体を一様流中に置けます。" />
+  <meta property="og:site_name" content="太陽の科学館" />
+  <meta property="og:image" content="https://solarphys.com/images/mhd/others/snapshot_of_draw_in_flow.png" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@id": "/",
+            "name": "太陽の科学館"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@id": "/draw_in_flow/",
+            "name": "Draw in Flow"
+          }
+        }
+      ]
+    }
+  </script>
+</head>
+
+<body>
+  <div class="loading" id="loading">
+    <div class="loading-text">
+      <span>L</span>
+      <span>O</span>
+      <span>A</span>
+      <span>D</span>
+      <span>I</span>
+      <span>N</span>
+      <span>G</span>
+    </div>
+  </div>
+  <div class="apli-wrapper">
+    <div class="logo section">
+      <div class="logo-wrapper">
+        <img class="logo-img" src="./logo.png" alt="Draw in Flow (タイトルロゴ)">
+      </div>
+    </div>
+    <div class="select section">
+      <div class="mode-wrapper">
+        <div class="status-indicator">
+          <input type="checkbox" name="status" id="status" checked>
+          <label for="status"></label>
+        </div>
+        <fieldset class="mode selector radio">
+          <div>
+            <input type="radio" name="mode-selector" id="calc" value="calc" checked>
+            <label for="calc">計算</label>
+          </div>
+          <div>
+            <input type="radio" name="mode-selector" id="paint" value="paint">
+            <label for="paint">お絵かき</label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="player-wrapper" id="player-wrapper">
+        <fieldset class="player selector" id="player">
+          <div>
+            <input type="checkbox" name="play-pause" id="play-pause">
+            <label for="play-pause" id="play-pause-label"><i class="fa-solid fa-play"></i></label>
+          </div>
+          <div>
+            <input type="button" name="initialize" id="initialize">
+            <label for="initialize"><i class="fa-solid fa-stop"></i></label>
+          </div>
+        </fieldset>
+        <fieldset class="plot-type selector radio" id="plot-type">
+          <div>
+            <input type="radio" name="plot-type-selector" id="velocity" value="velocity" checked>
+            <label for="velocity">流速</label>
+          </div>
+          <div>
+            <input type="radio" name="plot-type-selector" id="vorticity" value="vorticity">
+            <label for="vorticity">渦度</label>
+          </div>
+          <div>
+            <input type="radio" name="plot-type-selector" id="pressure" value="pressure">
+            <label for="pressure">圧力</label>
+          </div>
+        </fieldset>
+        <fieldset class="stream selector radio" id="stream-switch">
+          <div>
+            <input type="radio" name="stream" id="stream-on" checked>
+            <label for="stream-on">流線あり</label>
+          </div>
+          <div>
+            <input type="radio" name="stream" id="stream-off">
+            <label for="stream-off">流線なし</label>
+          </div>
+        </fieldset>
+        <fieldset class="range">
+          <p>レイノルズ数: <span id="reynolds-label">1.0e+3</span></p>
+          <input type="range" id="reynolds-number" value="69" min="0" max="90">
+          <div></div>
+        </fieldset>
+      </div>
+      <div class="painter-wrapper" id="painter-wrapper">
+        <fieldset class="draw-mode selector radio" id="draw-mode">
+          <div>
+            <input type="radio" name="draw-mode-selector" id="pen" value="pen" checked>
+            <label for="pen">ペン</label>
+          </div>
+          <div>
+            <input type="radio" name="draw-mode-selector" id="eraser" value="eraser">
+            <label for="eraser">消しゴム</label>
+          </div>
+        </fieldset>
+        <fieldset class="cleaner selector" id="player">
+          <div>
+            <input type="button" name="cleaner" id="cleaner">
+            <label for="cleaner">全部消す</label>
+          </div>
+        </fieldset>
+        <fieldset class="preset selector" id="preset">
+          <div>
+            <input type="button" name="cylinder" id="cylinder" value="cylinder" checked>
+            <label for="cylinder">円柱</label>
+          </div>
+          <div>
+            <input type="button" name="airfoil" id="airfoil" value="airfoil">
+            <label for="airfoil">翼型</label>
+          </div>
+          <div>
+            <input type="button" name="hiragana-na" id="hiragana-na" value="hiragana-na">
+            <label for="hiragana-na">な</label>
+          </div>
+        </fieldset>
+        <fieldset class="range">
+          <p>太さ: <span id="width-label">03</span></p>
+          <input type="range" id="width-range" value="3" min="1" max="25">
+          <div></div>
+        </fieldset>
+      </div>
+    </div>
+    <div class="config section">
+    </div>
+    <div class="plot section">
+      <div class="flow-calculator" id="calculator-wrapper">
+        <canvas id="flow-calculator"></canvas>
+        <p class="j0">0</p>
+        <p class="j1">1</p>
+        <p class="j2">2</p>
+        <p class="j3">3</p>
+        <p class="j4">4</p>
+        <p class="i0">0</p>
+        <p class="i1">1</p>
+        <p class="i2">2</p>
+        <p class="i3">3</p>
+        <p class="i4">4</p>
+        <p class="i5">5</p>
+        <p class="i6">6</p>
+        <p class="i7">7</p>
+        <p class="i8">8</p>
+      </div>
+    </div>
+    <div class="foot section">
+      <div class="result-wrapper">
+        <p>計算スピード: <span id="fps-viewer"></span> fps</p>
+        <p>抗力係数 &times; 物体の幅: <span id="drag-viewer"></span></p>
+        <p>揚力係数 &times; 物体の長さ: <span id="lift-viewer"></span></p>
+      </div>
+      <div class="scale-wrapper">
+        <div class="velocity-scale-wrapper" id="velocity-scale-wrapper">
+          <label for="velocity-scale">カラーマップのスケール: </label>
+          <input type="number" id="velocity-scale" name="velocity-scale" value="1.0" min="0.05" max="10.0" step="0.05">
+        </div>
+        <div class="vorticity-scale-wrapper" id="vorticity-scale-wrapper">
+          <label for="vorticity-scale">カラーマップのスケール: </label>
+          <input type="number" id="vorticity-scale" name="vorticity-scale" value="0.015" min="0.001" max="1.0"
+            step="0.001">
+        </div>
+        <div class="pressure-scale-wrapper" id="pressure-scale-wrapper">
+          <label for="pressure-scale">カラーマップのスケール: </label>
+          <input type="number" id="pressure-scale" name="pressure-scale" value="0.01" min="0.0005" max="1.0"
+            step="0.0005">
+        </div>
+        <div class="velocity-origin-wrapper" id="velocity-origin-wrapper">
+          <label for="velocity-origin">カラーマップの原点: </label>
+          <input type="number" id="velocity-origin" name="velocity-origin" value="1.0" min="-5.0" max="5.0" step="0.05">
+        </div>
+        <div class="vorticity-origin-wrapper" id="vorticity-origin-wrapper">
+          <label for="vorticity-origin">カラーマップの原点: </label>
+          <input type="number" id="vorticity-origin" name="vorticity-origin" value="0.0" min="-5.0" max="5.0"
+            step="0.001">
+        </div>
+        <div class="pressure-origin-wrapper" id="pressure-origin-wrapper">
+          <label for="pressure-origin">カラーマップの原点: </label>
+          <input type="number" id="pressure-origin" name="pressure-origin" value="1.0" min="-5.0" max="5.0"
+            step="0.0005">
+        </div>
+      </div>
+    </div>
+    <div class="description section">
+      <h2>Tips</h2>
+      <h4>どんなアプリ？</h4>
+      <ul>
+        <li>2次元の流体計算をブラウザにさせるウェブアプリです。この画面が表示された後は、サーバーとの間で通信をしません。</li>
+        <li>計算を開始すると、ブラウザがお使いのデバイスの CPU コアを 1 個占領すると思います。メモリは数百 MB 程度使うかもしれません。</li>
+        <li>計算結果の更新スピードが「計算スピード」欄に表示されます。新しめのパソコンならば、5 - 6 fps 程度の値が出ると予想されます。最大値は 8.0 fps です。</li>
+        <li>お絵かきモードで自由に描いた物体を、一様流中に置くことができます。</li>
+        <li>いろいろなボタンやつまみをイジって楽しんでください。</li>
+        <li>過激な設定の計算をすると、途中で結果が発散してしまうかもしれません。その過程も含めてお楽しみください。発散しても、初期化ボタン ( <i class="fa-solid fa-stop"></i> )
+          を押せば計算をやり直せます。</li>
+      </ul>
+      <h4>計算結果について</h4>
+      <ul>
+        <li>流速、渦度、圧力の計算結果はカラーマップとして図示されます。無限遠での値をグレー (ゼロ) として、それより大きければ赤色 (正の値)、小さければ青色 (負の値) になります。ただし、スケールや原点は変更できます。
+        </li>
+        <li>カラーマップのスケールとは、図示された色が頭打ちになるときの値と原点の差です。小さく設定すれば色が濃くなります。流速と圧力について、値 1.0 は無限遠での絶対値を指します。スケールは一時停止中のみ変更できます。
+        </li>
+        <li>カラーマップの原点は、グレーで図示されるときの値です。原点も一時停止中のみ変更できます。</li>
+        <li>渦度とは、流れの回転の度合いを表す物理量です。その付近の流れに左回りの傾向があれば赤、右回りの傾向があれば青になります。</li>
+        <li>レイノルズ数とは、流体の粘性が現象に与える影響力の指標です。レイノルズ数が小さいほどドロドロの流体 (あるいは小さな領域)、大きいほどサラサラの流体 (あるいは大きな領域) を計算していることになります。
+        </li>
+        <li>抗力、揚力とは、流体が物体に与える合力のことです。一様流方向 (今回は右向き) の成分を抗力、それに垂直な方向 (今回は上向き) の成分を揚力と言います。抗力係数、揚力係数はそれらの大きさの指標です。</li>
+      </ul>
+      <h4>結果から分かることの例</h4>
+      <ul>
+        <li>流線との関係性が可視化されるので、渦度の意味を理解することができます。</li>
+        <li>渦の中心は低圧になることから、渦における遠心力と圧力のつりあいがイメージできます。</li>
+        <li>レイノルズ数による流れ方の違いを大雑把に理解できます。</li>
+        <li>その他、上手く物体壁を描き、レイノルズ数を低く設定すれば、ベルヌーイの定理や圧力降下のような関係性の理解に役立つかもしれません。</li>
+        <li>面白い現象を見つけてみてください。ただし、その現象が現実にも起きうるのか、数値計算の設定による人工物なのかを判別するのは難しい場合が多いです。 
+        </li>
+      </ul>
+      <h4>結果を見るときの注意点</h4>
+      <ul>
+        <li>ブラウザでリアルタイムに計算できるように、格子は粗く設定してあります。</li>
+        <li>それに関連して、物体表面付近での流れの計算には大きな誤差が伴います。このため、抗力や揚力の大きさについて、特にレイノルズ数が大きい場合には、上手く計算できません。</li>
+        <li>レイノルズ数もいくらか過大評価していると思われます。</li>
+        <li>図示しているのは計算領域のうちの一部であり、図の外における流れも裏で計算しています。しかし、図の境界付近に物体を描くと、その先にある数値境界の人工的な影響が表れる可能性があります。</li>
+        <li>流出側 (計算領域の右辺) の数値境界条件には壊れやすいものを用いているため、高レイノルズ数での計算の破綻はこの境界が原因である可能性が高いです。
+        </li>
+        <li>物体表面では流速がゼロになるような境界条件が課されています。</li>
+        <li>計算開始直後の硬直状態を避けるために、初期条件には一様流からの微小な擾乱が加えてあります。</li>
+        <li>計算直後には、物体を突然置いたことによる激しい音波や定在波が発生します。落ち着くまでにはしばらく計算を進める必要があります。定在波の影響は、特に圧力に強く表れ、しぶとく残ります。</li>
+        <li>用いている計算スキームには、乱流モデルは組み込まれていません。また、計算格子も粗いので、乱流に関する現象は再現できません。</li>
+      </ul>
+      <h2>計算の詳細</h2>
+      <h4>物理設定</h4>
+      <ul>
+        <li>流体は非圧縮性を想定しています。つまり、空気というよりは水です。</li>
+        <li>図に書かれている目盛りを単位にして長さを表すことにします。</li>
+        <li>一様流の速度はマッハ 0.1 です。これは、水にしてはかなり大きいです。陽解法スキームを用いているため、計算速度をなるべく上げるための処方です。一般に、レイノルズ数を一定に保ちながら流速の設定を変えると、圧力変化の大きさは変わりますが、流れの様子は定性的には変わらないことが多いです。
+        </li>
+        <li>一様流の速度が 1 になるように物理時間の単位を取ることにします。このとき、一度の図の更新で物理時間が 0.05 だけ進みます。</li>
+        <li>レイノルズ数 Re は次のように定義されます。図の 1 目盛りが表す長さを L、一様流の速度を U、流体の動粘性率を &nu; としたとき、Re = LU/&nu; です。例えば、常温の水を想定し、L = 10 cm、U = 1 cm/s としたときに、Re = 1000 となります。</li>
+      </ul>
+      <h4>計算領域</h4>
+      <ul>
+        <li>図には x 方向に 8、y 方向に 4 の領域が示されていますが、計算領域はその外側にも広がります。図の左下を原点 (0, 0) としたとき、およそ &minus;4 &le; x &le; 16, &minus;8 &le; y &le; 12 の正方形領域が計算されます。</li>
+        <li>図に示された領域には 179 &times; 89 個の計算格子が存在します。図の外側の計算領域には、図の領域に比べて 2 倍の粗さ (面密度にして 1/4) の計算格子が設定されています。計算格子の総数は 61344 個です。</li>
+        <li>図を一度更新するために、図の外側の領域は 9 回、図の領域は 18 回、後述する時間積分スキームを実行します。</li>
+      </ul>
+      <h4>計算スキーム</h4>
+      <ul>
+        <li>格子ボルツマン法 (LBM, e.g. [1]) を用いています。この方法では、セルオートマトン風に離散化されたボルツマン方程式が計算されます。
+        </li>
+        <li>LBM の利点は、比較的計算が速いことと、境界条件の設定が容易なことです。お絵かきモードの実装のために選びました。</li>
+        <li>LBM は擬似圧縮性解法の一種です。解く方程式は、近似的に非圧縮性の質量保存則&amp;ナビエ-ストークス方程式に帰着するものですが、解く際に若干の圧縮性を認めます。</li>
+        <li>空間 2 次精度の解法を用いています。科学研究に使われるような有限差分法や有限体積法と比べると、精度は落ちます。また、物体形状に対応して計算格子の形を変化させることができないのも欠点です。因みに、3 次元計算に関しては、空間 4 次精度の LBM スキームも存在し、乱流遷移の再現を行った研究もあります [2]。</li>
+        <li>衝突項の計算には、セントラルモーメントを用いています。具体的には、文献 [3] の方法です。これにより、高レイノルズ数でも安定に計算を進められます。しかし、今回は格子点数が粗いので、精度には期待できません。</li>
+        <li>物体表面での固定境界条件には、ハーフウェイバウンスバックスキーム (e.g. [1]) を用いています。</li>
+        <li>計算領域の上辺、下辺、左辺の数値境界では、局所平衡分布を仮定して未知量を補完しています。</li>
+        <li>計算領域の右辺の数値流出境界では、文献 [4] の "convective condition" を用いています。領域内に与える影響が少ないのが利点ですが、安定性は他の境界より悪いです。</li>
+        <li>細かい計算格子の領域 (図示された領域) と粗い計算格子の領域は、空間的に 3 次スプライン補間、時間的に 2 次ラグランジュ補間を用いて滑らかに接続しています。</li>
+      </ul>
+      <h4>可視化手法</h4>
+      <ul>
+        <li>流線の可視化には LIC (Line Integral Convolution) 法 (e.g. [5]) を用いています。用いる入力ノイズとカーネルには文献 [6] のものを採用しました。</li>
+      </ul>
+      <h4>アプリの構成</h4>
+      <ul>
+        <li>UI とお絵かきモードは JavaScript、流体計算と可視化は WebAssembly によって実装されています。</li>
+        <li>並列化なしの CPU による計算です。</li>
+      </ul>
+      <h2>更新情報</h2>
+      <h4>更新履歴</h4>
+      <ul>
+        <li>2023 年 2 月 16 日：公開</li>
+        <li>2023 年 2 月 16 日：大きめのメモリリークが起きて、30 分くらい計算を続けるとクラッシュしてしまう問題を解決。</li>
+      </ul>
+      <h4>現在分かっている問題</h4>
+      <ul>
+        <li>線を描きすぎると、アプリが描画をあきらめて図が真っ暗になってしまう。</li>
+      </ul>
+      <h4>やり残したこと</h4>
+      <ul>
+        <li>GPU を使うと計算速度がどう変わるのか試してみたい。</li>
+      </ul>
+      <h2>参考文献</h2>
+      <ul>
+        <li>[1] 瀬田剛, (2021),『格子ボルツマン法』(森北出版).</li>
+        <li>[2] M. Geier, A. Pasquali and M. Sch&ouml;nherr, (2017), Parametrization of the cumulant lattice Boltzmann method for fourth order accurate diffusion part II: Application to flow around a sphere at drag crisis, <i>Journal of Computational Physics</i>, <b>348</b>, 889-898, <a href="https://doi.org/10.1016/j.jcp.2017.07.004" target="_blank" rel="noopener noreferrer">doi: 10.1016/j.jcp.2017.07.004</a>.</li>
+        <li>[3] A. De Rosis, (2016), Non-orthogonal central moments relaxing to a discrete equilibrium: A D2Q9 lattice Boltzmann model, <i>Europhysics Letters</i>, <b>116</b>, 44003, <a href="https://doi.org/10.1209/0295-5075/116/44003" target="_blank" rel="noopener noreferrer">doi: 10.1209/0295-5075/116/44003</a>.</li>
+        <li>[4] Z. Yang, (2013), Lattice Boltzmann outflow treatments: Convective conditions and others, <i>Computers and Mathematics with Applications</i>, <b>65</b>, 160-171, <a href="https://doi.org/10.1016/j.camwa.2012.11.012" target="_blank" rel="noopener noreferrer">doi: 10.1016/j.camwa.2012.11.012</a>.</li>
+        <li>[5] B. Cabral and L. C. Leedom, (1993), Imaging vector fields using line integral convolution, <i>SIGGRAPH '93: Proceedings of the 20th annual conference on Computer graphics and interactive techniques</i>, 263-270, <a href="https://doi.org/10.1145/166117.166151" target="_blank" rel="noopener noreferrer">doi: 10.1145/166117.166151</a>.</li>
+        <li>[6] R. Wegenkittl, E. Groller and W. Purgathofer, (1997), Animating flow fields: rendering of oriented line integral convolution, <i>Proceedings. Computer Animation '97</i>, 15-21, <a href="https://doi.org/10.1109/CA.1997.601035" target="_blank" rel="noopener noreferrer">doi: 10.1109/CA.1997.601035</a>.</li>
+      </ul>
+      <h2>注意事項</h2>
+      <ul>
+        <li>アプリの著作権は作者に帰属します。他所で再配布を行ったり、他のコンテンツの一部として用いることはできません。</li>
+        <li>何かございましたら以下の連絡先にお願いします。</li>
+        <li>峰田竜二: contact@solarphys.com</li>
+      </ul>
+      <h4><a href="/">太陽の科学館トップページへ</a></h4>
+    </div>
+  </div>
+</body>
+
+</html>

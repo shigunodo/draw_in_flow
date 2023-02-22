@@ -1,0 +1,24 @@
+{
+  "name": "draw_in_flow",
+  "author": "Ryuji Mineta <shigunodo@gmail> (https://github.com/shigunodo/)",
+  "version": "1.0.0",
+  "description": "WASM/JS web application, which can calculate 2D flow around object using CM-LBM. Physical boundary can be freely painted and set by user.",
+  "main": "main.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  },
+  "private": true,
+  "dependencies": {
+    "css-loader": "^6.7.3",
+    "file-loader": "^6.2.0",
+    "sass": "^1.58.1",
+    "sass-loader": "^13.2.0",
+    "style-loader": "^3.3.1"
+  }
+}
