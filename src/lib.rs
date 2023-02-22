@@ -334,10 +334,5 @@ impl Fluid {
     self.interp.init(&self.dist);
     self.drag = 0.0;
     self.lift = 0.0;
-    //if stream == 1 {
-    //let step_iter = marching::calc_step_iter(dt_iter, self.param.ma);
-    //let dt = (step_iter * RAT_M) as f64;
-    //self.lic.calc(&self.basic.u_main, &self.basic.v_main, self.param.ma, dt);
-    //}
   }
 }
