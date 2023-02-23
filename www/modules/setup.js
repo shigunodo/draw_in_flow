@@ -1,6 +1,6 @@
 import init, {Fluid} from "../../pkg/draw_in_flow.js";
 
-export const wasm = await init();
+const wasm = await init();
 
 export const canvas = document.getElementById("flow-calculator");
 export const ctx = canvas.getContext('2d');

@@ -48,7 +48,6 @@ pub fn interpolate_space<const NI_C: usize, const NI_F: usize, const RAT_M: usiz
   let dx_c = RAT_M as f64;
   for k in 0..NC {
     let mut rhs = [0.0; N_SOLV];
-    //c[0] = 3.0 / dx_c / dx_c * (f_c[1][k] - 2.0 * f_c[0][k]);
     for i in 1..(NI_C-1) {
       rhs[i-1] = 3.0 / dx_c / dx_c * (f_c[i+1][k] - 2.0 * f_c[i][k] + f_c[i-1][k]);
     }
@@ -57,15 +56,12 @@ pub fn interpolate_space<const NI_C: usize, const NI_F: usize, const RAT_M: usiz
     for i in 1..(NI_C-1) {
       c[i] = rhs[i-1];
     }
-    //c[0] = 0.0;
     let mut b = [0.0; NI_C];
     let mut d = [0.0; NI_C];
     for i in 0..(NI_C-1) {
       b[i] = (f_c[i+1][k] - f_c[i][k]) / dx_c - dx_c / 3.0 * (2.0 * c[i] + c[i+1]);
       d[i] = (c[i+1] - c[i]) / 3.0 / dx_c;
     }
-    //b[N_INT-1] = (f_c[N_INT][k] - f_c[N_INT-1][k]) / dx_c - dx_c / 3.0 * 2.0 * c[N_INT-1];
-    //d[N_INT-1] = -c[N_INT-1] / 3.0 / dx_c;
     for i_c in 0..(NI_C-1) {
       for i_f in 0..RAT_M {
         let dx = i_f as f64;

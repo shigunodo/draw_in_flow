@@ -27,6 +27,7 @@ struct CMapF64 {
 }
 
 // the colormap "coolwarm" from Matplotlib
+// K. Moreland. (2009). In Proceedings of the 5th International Symposium on Visual Computing. DOI 10.1007/978-3-642-10520-3_9.
 impl CMapF64 {
   const fn new() -> Self {
     Self {

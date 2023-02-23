@@ -91,6 +91,7 @@ fn advect_bottom(j: usize, u: f64, v: f64, px: f64, py: f64) -> (f64, f64, f64) 
 //}
 
 // Ramp-like kernel function
+// Reference: R. Wegenkittl, E. Groller and W. Purgathofer. (1997). Proceedings. Computer Animation '97, 15-21. DOI 10.1109/CA.1997.601035.
 #[inline]
 fn integral_of_kernel(smin: f64, smax: f64, phase: f64, l: f64) -> f64 {
   let a = smin + phase * l;

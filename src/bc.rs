@@ -79,7 +79,8 @@ pub fn reflect_bc_eq_left<const NI: usize, const NJ: usize>(
 //  }
 //}
 
-// convective condition (Yang, 2013) for outflow boundary: i = NI
+// convective condition for outflow boundary: i = NI
+// Reference: Z. Yang. (2013). Computers & Mathematics with Applications, 65, 160-171. DOI 10.1016/j.camwa.2012.11.012.
 #[inline]
 pub fn reflect_bc_conv_right<const NI: usize, const NJ: usize>(
   u: &[[f64; NI]; NJ],

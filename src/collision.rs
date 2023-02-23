@@ -1,5 +1,8 @@
 use crate::parameters::NC;
 
+// Reference for the used collision scheme
+// A. De Rosis. (2016). EPL, 116, 44003. DOI 10.1209/0295-5075/116/44003.
+
 #[inline]
 fn convert_f_to_cm(f: &[f64; NC], cx: &[f64; NC], cy: &[f64; NC], u: f64, v: f64, cm: &mut [f64; NC]) {
   //*cm = [0.0; NC];

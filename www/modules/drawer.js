@@ -1,4 +1,4 @@
-import {wasm, fluid, niPlot, njPlot, canvas, ctx, cells} from "./setup.js";
+import {fluid, niPlot, njPlot, canvas, ctx, cells} from "./setup.js";
 
 export const CELL_SIZE = 4; // px
 
