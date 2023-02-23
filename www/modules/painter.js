@@ -98,7 +98,11 @@ const detouch = () => {
 }
 
 export const initCanvasAsPainter = () => {
-  ctx.strokeStyle = '#47B5FF';
+  if (drawMode === 1) {
+    ctx.strokeStyle = '#06283D';
+  } else {
+    ctx.strokeStyle = '#47B5FF';
+  }
   ctx.lineJoin = 'round'; 
   ctx.lineCap = 'round';
   ctx.lineWidth = paintedLineWidth;
