@@ -104,6 +104,10 @@
             <input type="radio" name="plot-type-selector" id="pressure" value="pressure">
             <label for="pressure">圧力</label>
           </div>
+          <div>
+            <input type="radio" name="plot-type-selector" id="bernoulli-func" value="bernoulli-func">
+            <label for="bernoulli-func">ﾍﾞﾙﾇ<br>ｰｲ式</label>
+          </div>
         </fieldset>
         <fieldset class="stream selector radio" id="stream-switch">
           <div>
@@ -201,6 +205,11 @@
           <input type="number" id="pressure-scale" name="pressure-scale" value="0.01" min="0.0005" max="1.0"
             step="0.0005">
         </div>
+        <div class="bf-scale-wrapper" id="bf-scale-wrapper">
+          <label for="bf-scale">カラーマップのスケール: </label>
+          <input type="number" id="bf-scale" name="bf-scale" value="0.01" min="0.0005" max="1.0"
+            step="0.0005">
+        </div>
         <div class="velocity-origin-wrapper" id="velocity-origin-wrapper">
           <label for="velocity-origin">カラーマップの原点: </label>
           <input type="number" id="velocity-origin" name="velocity-origin" value="1.0" min="-5.0" max="5.0" step="0.05">
@@ -213,6 +222,11 @@
         <div class="pressure-origin-wrapper" id="pressure-origin-wrapper">
           <label for="pressure-origin">カラーマップの原点: </label>
           <input type="number" id="pressure-origin" name="pressure-origin" value="1.0" min="-5.0" max="5.0"
+            step="0.0005">
+        </div>
+        <div class="bf-origin-wrapper" id="bf-origin-wrapper">
+          <label for="bf-origin">カラーマップの原点: </label>
+          <input type="number" id="bf-origin" name="bf-origin" value="1.0" min="-5.0" max="5.0"
             step="0.0005">
         </div>
       </div>
@@ -237,6 +251,7 @@
         </li>
         <li>カラーマップの原点は、グレーで図示されるときの値です。原点も一時停止中のみ変更できます。</li>
         <li>渦度とは、流れの回転の度合いを表す物理量です。その付近の流れに左回りの傾向があれば赤、右回りの傾向があれば青になります。</li>
+        <li>ベルヌーイ式とは、ベルヌーイの定理において保存される式 (動圧 + 静圧 / 全水頭 / 全エンタルピーの変化量) のことを指します。</li>
         <li>レイノルズ数とは、流体の粘性が現象に与える影響力の指標です。レイノルズ数が小さいほどドロドロの流体 (あるいは小さな領域)、大きいほどサラサラの流体 (あるいは大きな領域) を計算していることになります。
         </li>
         <li>抗力、揚力とは、流体が物体に与える合力のことです。一様流方向 (今回は右向き) の成分を抗力、それに垂直な方向 (今回は上向き) の成分を揚力と言います。抗力係数、揚力係数はそれらの大きさの指標です。</li>
@@ -244,9 +259,10 @@
       <h4>結果から分かることの例</h4>
       <ul>
         <li>流線との関係性が可視化されるので、渦度の意味を理解することができます。</li>
-        <li>渦の中心は低圧になることから、渦における遠心力と圧力のつりあいがイメージできます。</li>
+        <li>渦の中心は低圧になることから、渦における遠心力と圧力傾度力のつりあいがイメージできます。</li>
         <li>レイノルズ数による流れ方の違いを大雑把に理解できます。</li>
-        <li>その他、上手く物体壁を描き、レイノルズ数を低く設定すれば、ベルヌーイの定理や圧力降下のような関係性の理解に役立つかもしれません。</li>
+        <li>ベルヌーイの定理の成立条件を理解できます。ベルヌーイの定理は、定常流かつ粘性が無視できる場合に、ある瞬間の同じ流線上でベルヌーイ式の値が一定値を取るというものです。例えば、レイノルズ数を高く設定した場合、物体の上流側は定常流に近くなりますから、ベルヌーイ式が一定値を取ります。逆に、下流側は定常とはみなせませんから、ベルヌーイ式は変動します。また、レイノルズ数を低く設定した場合は、非粘性の仮定が崩れますからベルヌーイの定理は成り立ちません。</li>
+        <li>その他、上手く物体壁を描き、レイノルズ数を低く設定すれば、圧力降下などの現象の理解に役立つかもしれません。</li>
         <li>面白い現象を見つけてみてください。ただし、その現象が現実にも起きうるのか、数値計算の設定による人工物なのかを判別するのは難しい場合が多いです。 
         </li>
       </ul>
@@ -262,6 +278,7 @@
         <li>計算開始直後の硬直状態を避けるために、初期条件には一様流からの微小な擾乱が加えてあります。</li>
         <li>計算直後には、物体を突然置いたことによる激しい音波や定在波が発生します。落ち着くまでにはしばらく計算を進める必要があります。定在波の影響は、特に圧力に強く表れ、しぶとく残ります。</li>
         <li>用いている計算スキームには、乱流モデルは組み込まれていません。また、計算格子も粗いので、乱流に関する現象は再現できません。</li>
+        <li>実際の車や飛行機、船などの場合、レイノルズ数は 10 の 6 乗から 9乗のような、ずっと大きい値になります。このアプリの結果をそのままこれらの系に当てはめられるわけではありません。実用的なシミュレーションには相応の計算資源と計算時間が必要です。</li>
       </ul>
       <h2>計算の詳細</h2>
       <h4>物理設定</h4>
@@ -306,6 +323,7 @@
       <ul>
         <li>2023 年 2 月 16 日：公開</li>
         <li>2023 年 2 月 16 日：大きめのメモリリークが起きて、30 分くらい計算を続けるとクラッシュしてしまう問題を解決。</li>
+        <li>2023 年 2 月 24 日：ベルヌーイ式も図示できるようにした。</li>
       </ul>
       <h4>現在分かっている問題</h4>
       <ul>

@@ -85,6 +85,7 @@ impl Fluid {
       0 => self.plot_velocity(vmin, vmax),
       1 => self.plot_vorticity(vmin, vmax),
       2 => self.plot_pressure(vmin, vmax),
+      3 => self.plot_bernoulli_func(vmin, vmax),
       _ => panic!("fn plot: No quantities for plotting specified."),
     }
     if stream == 1 {
@@ -127,6 +128,11 @@ impl Fluid {
   fn plot_pressure(&mut self, vmin: f64, vmax: f64) {
     let p = calc_pressure(&self.basic.rho_main);
     self.plotter.value(&p, vmin, vmax, &mut self.rgb);
+  }
+  #[inline]
+  fn plot_bernoulli_func(&mut self, vmin: f64, vmax: f64) {
+    let bf = calc_bernoulli_func(&self.basic.rho_main, &self.basic.u_main, &self.basic.v_main);
+    self.plotter.value(&bf, vmin, vmax, &mut self.rgb);
   }
 }
 
@@ -180,4 +186,15 @@ fn calc_pressure(rho: &[[f64; NI_M]; NJ_M]) -> [[f64; NI_M]; NJ_M] {
     }
   }
   p
+}
+
+#[inline]
+fn calc_bernoulli_func(rho: &[[f64; NI_M]; NJ_M], u: &[[f64; NI_M]; NJ_M], v: &[[f64; NI_M]; NJ_M]) -> [[f64; NI_M]; NJ_M] {
+  let mut bf = [[std::f64::NAN; NI_M]; NJ_M];
+  for j in 0..NJ_M {
+    for i in 0..NI_M {
+      bf[j][i] = 0.5 * (u[j][i] * u[j][i] + v[j][i] * v[j][i]) + rho[j][i] / 3.0;
+    }
+  }
+  bf
 }

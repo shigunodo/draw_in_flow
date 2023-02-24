@@ -1,20 +1,22 @@
-import {fluid, uUniform, 
+import {fluid,
   dragViewer, liftViewer, fpsViewer, 
   dtIter, 
   playPauseButton, playPauseLabel, stopButton, 
-  maNumber,
-  velocityButton, vorticityButton, pressureButton, 
+  velocityButton, vorticityButton, pressureButton, bfButton,
   streamOnButton, streamOffButton, 
   reynoldsRange, reynoldsLabel,
   statusIndicator,
-  velocityScale, vorticityScale, pressureScale,
-  velocityScaleWrapper, vorticityScaleWrapper, pressureScaleWrapper,
-  velocityOrigin, vorticityOrigin, pressureOrigin,
-  velocityOriginWrapper, vorticityOriginWrapper, pressureOriginWrapper,
+  velocityScale, vorticityScale, pressureScale, bfScale,
+  velocityScaleWrapper, vorticityScaleWrapper, pressureScaleWrapper, bfScaleWrapper,
+  velocityOrigin, vorticityOrigin, pressureOrigin, bfOrigin,
+  velocityOriginWrapper, vorticityOriginWrapper, pressureOriginWrapper, bfOriginWrapper,
 } from "./setup.js";
 import {drawCells} from "./drawer.js";
 
 let reNumber = 1.0e3;
+const maNumber = 0.1;
+const uUniform = maNumber / Math.sqrt(3.0);
+const bfUniform = (0.5 * maNumber * maNumber + 1.0) / 3.0;
 
 let startTime = new Date().getTime();
 let arrIntervalTime = [0.0, 0.0, 0.0, 0.0, 0.0];
@@ -26,21 +28,25 @@ let animationId = null;
 let vmaxForVelocity = 1.0;
 let vmaxForVorticity = 0.015;
 let vmaxForPressure = 0.01;
+let vmaxForBf = 0.01;
 let vzeroForVelocity = 1.0;
 let vzeroForVorticity = 0.0;
 let vzeroForPressure = 1.0;
-let plotQuantity = 0;
-let streamPlot = 1;
+let vzeroForBf = 1.0;
+let plotQuantity = 0; // 0: velocity, 1: vorticity, 2: pressure, 3: Bernulli function (bf)
+let streamPlot = 1; // 0: off, 1: on
 
 let vmin = [];
 let vmax = [];
 const setScale = () => {
   vmin = [(vzeroForVelocity - vmaxForVelocity) * uUniform, 
     vzeroForVorticity - vmaxForVorticity, 
-    vzeroForPressure - vmaxForPressure - 1.0];
+    vzeroForPressure - vmaxForPressure - 1.0,
+    (vzeroForBf - vmaxForBf) * bfUniform];
   vmax = [(vzeroForVelocity + vmaxForVelocity) * uUniform, 
     vzeroForVorticity + vmaxForVorticity, 
-    vzeroForPressure + vmaxForPressure - 1.0];
+    vzeroForPressure + vmaxForPressure - 1.0,
+    (vzeroForBf + vmaxForBf) * bfUniform];
 }
 setScale();
 
@@ -48,16 +54,20 @@ const resetScale = () => {
   vmaxForVelocity = 1.0;
   vmaxForVorticity = 0.015;
   vmaxForPressure = 0.01;
+  vmaxForBf = 0.01;
   vzeroForVelocity = 1.0;
   vzeroForVorticity = 0.0;
   vzeroForPressure = 1.0;
+  vzeroForBf = 1.0;
   setScale();
   velocityScale.value = "1.0";
   vorticityScale.value = "0.015";
   pressureScale.value = "0.01";
+  bfScale.value = "0.01";
   velocityOrigin.value = "1.0";
   vorticityOrigin.value = "0.0";
   pressureOrigin.value = "1.0";
+  bfOrigin.value = "1.0";
 }
 
 const maxFps = 8.0;
@@ -94,18 +104,22 @@ export const setScalesDisabled = () => {
   velocityScale.setAttribute("disabled", true);
   vorticityScale.setAttribute("disabled", true);
   pressureScale.setAttribute("disabled", true);
+  bfScale.setAttribute("disabled", true);
   velocityOrigin.setAttribute("disabled", true);
   vorticityOrigin.setAttribute("disabled", true);
   pressureOrigin.setAttribute("disabled", true);
+  bfOrigin.setAttribute("disabled", true);
 }
 
 export const setScalesAbled = () => {
   velocityScale.removeAttribute("disabled");
   vorticityScale.removeAttribute("disabled");
   pressureScale.removeAttribute("disabled");
+  bfScale.removeAttribute("disabled");
   velocityOrigin.removeAttribute("disabled");
   vorticityOrigin.removeAttribute("disabled");
   pressureOrigin.removeAttribute("disabled");
+  bfOrigin.removeAttribute("disabled");
 }
 
 const renderLoop = () => {
@@ -180,9 +194,11 @@ velocityButton.addEventListener("click", event => {
   velocityScaleWrapper.style.display = "block";
   vorticityScaleWrapper.style.display = "none";
   pressureScaleWrapper.style.display = "none";
+  bfScaleWrapper.style.display = "none";
   velocityOriginWrapper.style.display = "block";
   vorticityOriginWrapper.style.display = "none";
   pressureOriginWrapper.style.display = "none";
+  bfOriginWrapper.style.display = "none";
 });
 
 vorticityButton.addEventListener("click", event => {
@@ -192,9 +208,11 @@ vorticityButton.addEventListener("click", event => {
   velocityScaleWrapper.style.display = "none";
   vorticityScaleWrapper.style.display = "block";
   pressureScaleWrapper.style.display = "none";
+  bfScaleWrapper.style.display = "none";
   velocityOriginWrapper.style.display = "none";
   vorticityOriginWrapper.style.display = "block";
   pressureOriginWrapper.style.display = "none";
+  bfOriginWrapper.style.display = "none";
 });
 
 pressureButton.addEventListener("click", event => {
@@ -204,9 +222,25 @@ pressureButton.addEventListener("click", event => {
   velocityScaleWrapper.style.display = "none";
   vorticityScaleWrapper.style.display = "none";
   pressureScaleWrapper.style.display = "block";
+  bfScaleWrapper.style.display = "none";
   velocityOriginWrapper.style.display = "none";
   vorticityOriginWrapper.style.display = "none";
   pressureOriginWrapper.style.display = "block";
+  bfOriginWrapper.style.display = "none";
+});
+
+bfButton.addEventListener("click", event => {
+  plotQuantity = 3;
+  fluid.plot(plotQuantity, streamPlot, vmin[plotQuantity], vmax[plotQuantity], dtIter, 0);
+  drawCells();
+  velocityScaleWrapper.style.display = "none";
+  vorticityScaleWrapper.style.display = "none";
+  pressureScaleWrapper.style.display = "none";
+  bfScaleWrapper.style.display = "block";
+  velocityOriginWrapper.style.display = "none";
+  vorticityOriginWrapper.style.display = "none";
+  pressureOriginWrapper.style.display = "none";
+  bfOriginWrapper.style.display = "block";
 });
 
 streamOnButton.addEventListener("click", event => {
@@ -248,6 +282,13 @@ pressureScale.addEventListener("input", event => {
   drawCells();
 });
 
+bfScale.addEventListener("input", event => {
+  vmaxForBf = bfScale.valueAsNumber;
+  setScale();
+  fluid.plot(plotQuantity, streamPlot, vmin[plotQuantity], vmax[plotQuantity], dtIter, 0);
+  drawCells();
+});
+
 velocityOrigin.addEventListener("input", event => {
   vzeroForVelocity = velocityOrigin.valueAsNumber;
   setScale();
@@ -264,6 +305,13 @@ vorticityOrigin.addEventListener("input", event => {
 
 pressureOrigin.addEventListener("input", event => {
   vzeroForPressure = pressureOrigin.valueAsNumber;
+  setScale();
+  fluid.plot(plotQuantity, streamPlot, vmin[plotQuantity], vmax[plotQuantity], dtIter, 0);
+  drawCells();
+});
+
+bfOrigin.addEventListener("input", event => {
+  vzeroForBf = bfOrigin.valueAsNumber;
   setScale();
   fluid.plot(plotQuantity, streamPlot, vmin[plotQuantity], vmax[plotQuantity], dtIter, 0);
   drawCells();

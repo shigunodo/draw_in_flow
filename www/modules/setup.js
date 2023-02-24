@@ -10,8 +10,6 @@ export const fpsViewer = document.getElementById("fps-viewer");
 export const dragViewer = document.getElementById("drag-viewer");
 export const liftViewer = document.getElementById("lift-viewer");
 
-export const maNumber = 0.1;
-export const uUniform = maNumber / Math.sqrt(3.0);
 export const fluid = Fluid.new();
 
 export const niPlot = fluid.get_ni();
@@ -32,6 +30,7 @@ export const stopButton = document.getElementById("initialize");
 export const velocityButton = document.getElementById("velocity");
 export const vorticityButton = document.getElementById("vorticity");
 export const pressureButton = document.getElementById("pressure");
+export const bfButton = document.getElementById("bernoulli-func");
 export const streamOnButton = document.getElementById("stream-on");
 export const streamOffButton = document.getElementById("stream-off");
 
@@ -57,9 +56,11 @@ export const widthLabel = document.getElementById("width-label");
 export const velocityScale = document.getElementById("velocity-scale");
 export const vorticityScale = document.getElementById("vorticity-scale");
 export const pressureScale = document.getElementById("pressure-scale");
+export const bfScale = document.getElementById("bf-scale");
 export const velocityOrigin = document.getElementById("velocity-origin");
 export const vorticityOrigin = document.getElementById("vorticity-origin");
 export const pressureOrigin = document.getElementById("pressure-origin");
+export const bfOrigin = document.getElementById("bf-origin");
 
 export const playerSection = document.getElementById("player");
 export const plotTypeSection = document.getElementById("plot-type");
@@ -71,6 +72,8 @@ export const calculatorWrapper = document.getElementById("calculator-wrapper");
 export const velocityScaleWrapper = document.getElementById("velocity-scale-wrapper");
 export const vorticityScaleWrapper = document.getElementById("vorticity-scale-wrapper");
 export const pressureScaleWrapper = document.getElementById("pressure-scale-wrapper");
+export const bfScaleWrapper = document.getElementById("bf-scale-wrapper");
 export const velocityOriginWrapper = document.getElementById("velocity-origin-wrapper");
 export const vorticityOriginWrapper = document.getElementById("vorticity-origin-wrapper");
 export const pressureOriginWrapper = document.getElementById("pressure-origin-wrapper");
+export const bfOriginWrapper = document.getElementById("bf-origin-wrapper");
