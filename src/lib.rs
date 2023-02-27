@@ -15,9 +15,8 @@ mod na; // hiragana "na" for boundary setting
 
 use std::f64::consts::PI;
 
-use parameters::{RAT_M, NI_M, NJ_M, NI_T, NJ_T, NI_B, NJ_B, NI_L, NJ_L, NJ_R, NI_R, N_SOLV_TB, N_SOLV_LR, NI_PLOT, NJ_PLOT};
+use parameters::{NC, N_RGB, L_SCALE, RAT_M, NI_M, NJ_M, NI_T, NJ_T, NI_B, NJ_B, NI_L, NJ_L, NJ_R, NI_R, N_SOLV_TB, N_SOLV_LR, NI_PLOT, NJ_PLOT, BOUND_VEC_CAP};
 use wasm_bindgen::prelude::*;
-use crate::parameters::{NC, N_RGB, L_SCALE};
 
 //--------------------------------------------------------------
 // ↓↓↓↓↓ decleration of struct to be created in js script ↓↓↓↓↓
@@ -286,6 +285,11 @@ impl LIC {
 
 #[wasm_bindgen]
 pub struct Fluid {
+  // This array will be exposed to JavaScript as Unit8Array pointer.
+  // When this array is located under the struct Plot,
+  // the instance will be copied repeatedly (for some reason), and cause severe memory leaks.
+  rgb: [u8; N_RGB],
+  //
   pub param: Param,
   pub bound: Boundary,
   pub basic: Basic,
@@ -301,16 +305,13 @@ pub struct Fluid {
   bound_right: Vec<Index>,
   drag: f64,
   lift: f64,
-  // This array will be exposed to JavaScript as Unit8Array pointer.
-  // When this array is located under the struct Plot,
-  // the instance will be copied repeatedly (for some reason), and cause severe memory leaks.
-  rgb: [u8; N_RGB],
 }
 
 #[wasm_bindgen]
 impl Fluid {
   pub fn new() -> Self {
     Self {
+      rgb: [0u8; N_RGB],
       param: Param::new(), 
       bound: Boundary::new(),
       basic: Basic::new(), 
@@ -318,13 +319,12 @@ impl Fluid {
       interp: Interpolation::new(), 
       plotter: Plot::new(), 
       lic: LIC::new(), 
-      bound_up: Vec::new(), 
-      bound_down: Vec::new(), 
-      bound_left: Vec::new(), 
-      bound_right: Vec::new(), 
+      bound_up: Vec::with_capacity(BOUND_VEC_CAP), 
+      bound_down: Vec::with_capacity(BOUND_VEC_CAP), 
+      bound_left: Vec::with_capacity(BOUND_VEC_CAP), 
+      bound_right: Vec::with_capacity(BOUND_VEC_CAP), 
       drag: 0.0, 
       lift: 0.0,
-      rgb: [0u8; N_RGB],
     }
   }
   pub fn init(&mut self, re: f64, ma: f64) {

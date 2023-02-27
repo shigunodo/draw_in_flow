@@ -38,3 +38,5 @@ pub const L_SCALE: f64 = NJ_M as f64 / 4.0;
 pub const N_SOLV_TB: usize = NI_T - 2;
 /// number of nodes to be solved at spline interpolation
 pub const N_SOLV_LR: usize = NJ_M_C - 2;
+/// capacity of vec length for physical boundary search
+pub const BOUND_VEC_CAP: usize = 1000;

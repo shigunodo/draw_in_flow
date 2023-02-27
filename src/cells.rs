@@ -54,7 +54,7 @@ impl Fluid {
     for j in 0..NJ_M {
       for i in 0..NI_M {
         if self.bound.cell[j][i] == Cell::Dead {
-          if j != NJ_M {
+          if j != NJ_M-1 {
             if self.bound.cell[j+1][i] == Cell::Alive {
               self.bound_up.push(Index{i, j: j+1});
             }
@@ -64,7 +64,7 @@ impl Fluid {
               self.bound_down.push(Index{i, j: j-1});
             }
           }
-          if i != NI_M {
+          if i != NI_M-1 {
             if self.bound.cell[j][i+1] == Cell::Alive {
               self.bound_right.push(Index{i: i+1, j});
             }
